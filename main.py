@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 from datetime import datetime
-from PyQt5.QtWidgets import QApplication
 
 window_name = "Frame"
 paintBar = None
@@ -16,8 +15,12 @@ def display(cap):
     isPlaying = True
     config()
 
+    # saveing video
+    fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+    out = cv2.VideoWriter("record.mp4", fourcc, 10.0, (1280, 720))
     while(cap.isOpened()):
         ret, frame = cap.read()
+        clone = frame.copy()
         if (ret):
             # add time
             now = datetime.now()
@@ -40,6 +43,7 @@ def display(cap):
                 addTextToButton(button, "started", (255, 0, 0))
                 frame[720-50:720-10, 10:110] = button
                 cv2.imshow(window_name, frame)
+                out.write(clone)        
                 
             # Press Q on keyboard to  exit, press space to stop/play video
             key = cv2.waitKey(5) & 0xFF
